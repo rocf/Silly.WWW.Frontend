@@ -1,0 +1,107 @@
+﻿<nz-card [nzTitle]="nzTitleTemplate" [nzExtra]="extraTemplate">
+    <ng-template #nzTitleTemplate>
+        <i nz-icon nzType="team" class="mr-sm"></i>
+        <span *ngIf="organizationUnit">{{organizationUnit.title}}</span>
+        <span *ngIf="!organizationUnit">{{"Members" | localize}}</span>
+    </ng-template>
+    <ng-template #extraTemplate>
+        <ng-container *ngIf="organizationUnit">
+            <ng-container *ngIf="isGranted('Pages.Administration.OrganizationUnits.ManageMembers')">
+                <a (click)="addMembers()">
+                    <i nz-icon nzType="plus"></i> {{"AddMember" | localize}}
+                </a>
+                <nz-divider nzType="vertical"></nz-divider>
+            </ng-container>
+            <ng-container
+                *ngIf="isGranted('Pages.Administration.OrganizationUnits.ManageMembers') && selectedDataItems.length>0">
+                <a (click)="batchDelete()">
+                    <i nz-icon nzType="delete"></i> Delete Selected
+                </a>
+                <nz-divider nzType="vertical"></nz-divider>
+            </ng-container>
+            <a class="ml-sm">
+                <i nz-icon nzType="reload" nz-tooltip [nzTitle]="l('Refresh')" (click)="refresh()"></i>
+            </a>
+        </ng-container>
+    </ng-template>
+
+    <ng-container *ngIf="organizationUnit">
+        <form nz-form [nzLayout]="'vertical'" (ngSubmit)="refresh()" autocomplete="off">
+            <nz-form-control>
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+                    <input type="text" nz-input [(ngModel)]="filterText" name="filterText"
+                        placeholder="{{'SearchWithThreeDot' | localize}}">
+                    <ng-template #suffixButton>
+                        <button nz-button nzType="primary" nzSearch type="submit">
+                            <i nz-icon nzType="search"></i>
+                        </button>
+                    </ng-template>
+                </nz-input-group>
+            </nz-form-control>
+        </form>
+        <div class="my-md">
+            <nz-alert [nzType]="'info'" [nzShowIcon]="true" [nzMessage]="message">
+                <ng-template #message>
+                    <span>
+                        <strong class="text-primary">{{selectedDataItems.length}}</strong> items selected
+                    </span>
+                    <a (click)="restCheckStatus(dataList)" class="ml-md" *ngIf="selectedDataItems.length>0">
+                        {{'Clear' | localize}}
+                    </a>
+                </ng-template>
+            </nz-alert>
+        </div>
+        <nz-row class="my-md">
+            <nz-table #ajaxTable [nzFrontPagination]="false" [nzShowQuickJumper]="true" [nzShowSizeChanger]="true"
+                [nzData]="dataList" [nzTotal]="totalItems" [nzLoading]="isTableLoading" [(nzPageIndex)]="pageNumber"
+                [(nzPageSize)]="pageSize" (nzPageIndexChange)="refresh()" (nzPageSizeChange)="refresh()"
+                [nzShowTotal]="totalTemplate">
+                <ng-template #totalTemplate let-total>
+                    {{'TotalRecordsCount' | localize:total}}
+                </ng-template>
+                <thead (nzSortChange)="gridSort($event)">
+                    <tr>
+                        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled"
+                            [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)"></th>
+                        <th nzWidth="150px" class="text-center">
+                            {{'Actions' | localize}}
+                        </th>
+                        <th nzShowSort nzSortKey="userName">
+                            {{'UserName' | localize}}
+                        </th>
+                        <th nzShowSort nzSortKey="addedTime" class="text-center">
+                            {{'AddedTime' | localize}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of ajaxTable.data">
+                        <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus($event)">
+                        </td>
+                        <td class="text-center">
+                            <ng-container *ngIf="isGranted('Pages.Administration.OrganizationUnits.ManageUsers')">
+                                <a nz-popconfirm
+                                    [nzPopconfirmTitle]="l('RemoveUserFromOuWarningMessage', item.userName, organizationUnit.title)"
+                                    (nzOnConfirm)="removeMember(item)" [nzOkText]="l('Ok')"
+                                    [nzCancelText]="l('Cancel')">
+                                    <i nz-icon nzType="delete"></i>
+                                    {{'Delete' | localize}}
+                                </a>
+                            </ng-container>
+                        </td>
+                        <td>
+                            {{item.userName}}
+                        </td>
+                        <td class="text-center">
+                            {{item.addedTime | momentFormat:'L'}}
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </nz-row>
+    </ng-container>
+
+    <div class="text-center" *ngIf="!organizationUnit">
+        <nz-empty class="ant-empty-normal" [nzNotFoundContent]="l('SelectAnOrganizationUnitToSeeMembers')"></nz-empty>
+    </div>
+</nz-card>

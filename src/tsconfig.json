@@ -1,0 +1,49 @@
+﻿{
+  "compilerOptions": {
+    "declaration": false,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "mapRoot": "./",
+    "module": "esnext",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "outDir": "../dist/out-tsc",
+    "sourceMap": true,
+    "target": "es2015",
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@appshared/*": [
+        "app/shared/*"
+      ],
+      "@core/*": [
+        "app/core/*"
+      ],
+      "@testing/*": [
+        "testing/*"
+      ],
+      "@env/*": [
+        "environments/*"
+      ],
+      "@shared/*": [
+        "shared/*"
+      ],
+      "@app/*": [
+        "./app/*"
+      ],
+      "@abp/*": [
+        "../node_modules/abp-ng2-module/dist/src/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

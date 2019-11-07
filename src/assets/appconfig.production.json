@@ -1,0 +1,28 @@
+﻿{
+  "remoteServiceBaseUrl": "http://localhost:5000",
+  "appBaseUrl": "http://localhost:4200",
+  "localeMappings": {
+    "angular": [
+      {
+        "from": "zh-Hans",
+        "to": "zh"
+      }
+    ],
+    "ng_zorro":[
+      {
+        "from": "en",
+        "to": "en_US"
+      },
+      {
+        "from": "zh-Hans",
+        "to": "zh_CN"
+      }
+    ],
+    "moment": [
+      {
+        "from": "zh-Hans",
+        "to": "zh-cn"
+      }
+    ]
+  }
+}
